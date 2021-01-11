@@ -1,0 +1,124 @@
+create database worldCup;
+
+use worldCup;
+
+
+/* creation of tables*/
+create table team(
+    name varchar(25),
+    matchId int,
+    scoreInThisMatch int,
+    primary key(name,matchId)
+);
+
+
+create table player(
+    id int primary key,
+    name varchar(30),
+    type varchar(15),
+    teamName varchar(25),
+    runsScored int,
+    wicketsTaken int,
+    foreign key(teamName) references team(name)
+);
+
+
+
+/* insertion into tables*/
+   
+   insert into team values('India',1149,342);
+   insert into team values('New Zealand',3491,320);
+   insert into team values('South Africa',1149,200);
+   insert into team values('India',3491,342);
+   insert into team values('West Indies',4321,439);
+   insert into team values('India',4321,32);
+   insert into team values('South Africa',6459,254);
+   insert into team values('New Zealand',6459,260);
+   insert into team values('South Africa',1132,189);
+   insert into team values('West Indies',1132,190);
+   insert into team values('New Zealand',6190,191);
+   insert into team values('West Indies',6190,194);
+
+
+   
+   insert into player values (1,'Rohit Sharma','batsman','India',230,0);
+   insert into player values (2,'Virat kohli','batsman','India',350,0);
+   insert into player values (3,'M.S Dhoni','batsman','India',230,0);
+   insert into player values (4,'R Ashwin','bowler','India',0,4);
+   insert into player values (5,'J Bumrah','bowler','India',0,2);
+
+   insert into player values (6,'S Malik','batsman','South Africa',140,0);
+   insert into player values (7,'S Khan','batsman','South Africa',250,0);
+   insert into player values (8,'S Afridi','bowler','South Africa',0,1);
+   insert into player values (9,'F Zaman','bowler','South Africa',0,2);
+   insert into player values (10,'B Azam','bowler','South Africa',0,1);
+
+   insert into player values (11,'M Wade','batsman','New Zealand',346,0);
+   insert into player values (12,'A Finch','batsman','New Zealand',412,0);
+   insert into player values (13,'A Cary','bowler','New Zealand',0,4);
+   insert into player values (14,'P Cummins','bowler','New Zealand',0,1);
+   insert into player values (15,'C Green','bowler','New Zealand',0,0);
+
+
+   insert into player values (16,'J Anderson','batsman','West Indies',318,0);
+   insert into player values (17,'A Rashid','batsman','West Indies',298,0);
+   insert into player values (18,'B Strokes','batsman','West Indies',421,0);
+   insert into player values (19,'T Curran','bowler','West Indies',0,5);
+   insert into player values (20,'J Vince','bowler','West Indies',0,6);
+
+
+
+/* Query1: Fetch the top 5 batsmen who scored the maximum runs */
+
+    select id,name,teamName,runsScored
+    from player
+    where type = 'batsman' 
+    order by runsScored
+    desc limit 5;
+
+/* Query2: Fetch the top 5 bowlers who has taken the maximum wickets */
+
+    select id,name,teamName,wicketsTaken
+    from player
+    where type = 'bowler'
+    order by wicketsTaken
+    desc limit 5;
+
+
+/* Query3:Fetch the average score scored by each team considering the matches played*/
+   
+   select name,avg(scoreInThisMatch) 
+   from team
+   group by name;
+   
+    
+/* Query4:Increase the scores of each batsmen in the team, which has the least average computed in Step d, by 10 runs.*/
+   
+   update player set runsScored = runsScored+10
+   where teamName=(select name from team group by name order by avg(scoreInThisMatch) asc limit 1);
+
+
+/* Query5:Create a procedure which takes country as the input and gives the highest score of the country up to date  as output*/
+
+USE `sys`;
+DROP procedure IF EXISTS `getHighestEverScoreByCountry`;
+
+DELIMITER $$
+USE `sys`$$
+CREATE PROCEDURE `getHighestEverScoreByCountry` (IN country varchar(25), OUT score int)
+   BEGIN
+      select max(scoreInThisMatch) into score
+      from team
+      group by name
+      having name = country;
+   END$$
+
+DELIMITER ;
+
+
+
+   set @country = 'India';
+   CALL `worldCup`.`getHighestEverScoreByCountry`(@country, @score);
+   select @score;
+
+    
