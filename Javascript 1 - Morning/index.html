@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Question 5 JS1 assignment</title>
+    <script>
+        function displayFormData() {
+            var obj = Array.from(document.querySelectorAll('input'))
+           .reduce((key,val) => ({...key,[val.id]:val.value}),{});
+            delete obj[""];
+            console.log(JSON.stringify(obj));
+        }  
+        
+        function func(){
+            document.getElementById('accoliteMember').checked = false;
+            // document.getElementById('accoliteMember').setAttribute("value", "no");//not working
+        }
+    </script>
+</head>
+<body>
+    <form action="#" onsubmit="displayFormData();return false" method="post" id="form1">
+        Are you an Accolite member? 
+        Yes<input type="radio" name="accoliteMember" id="accoliteMember" value='yes'  checked >
+        <input type=button value="Clear" onclick=
+        "return func()">
+        <br>
+        Enter first name: <input type="text" class='display' name='firstName' id='firstName'><br>
+        Enter last name:  <input type="text" class='display' name='lastName' id='lastName'><br>
+        Enter your email: <input type="email" class='display' name="email" id="email" required>
+        <br>
+        Location : 
+        <select class='display' name="location" id="location">
+            <option disabled selected value> -- select an option -- </option>
+            <option value="Bangalore">Bangalore</option>
+            <option value="Mumbai">Mumbai</option>
+            <option value="Hyderabad">Hyderabad</option>
+            <option value="Chennai">Chennai</option>
+        </select>
+        <br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
