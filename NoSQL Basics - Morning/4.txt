@@ -1,0 +1,10 @@
+#removing primary index
+drop index couchbase_demo.idx_primary_cbdemo;
+
+
+#adding a particular index
+CREATE INDEX idx_secondary ON couchbase_demo('_class')
+
+
+
+
